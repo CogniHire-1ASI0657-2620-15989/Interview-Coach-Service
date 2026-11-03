@@ -1,0 +1,1 @@
+"""Interview Coach query definitions."""

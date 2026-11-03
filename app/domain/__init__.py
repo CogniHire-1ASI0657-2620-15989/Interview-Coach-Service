@@ -1,0 +1,1 @@
+"""Interview Coach domain model."""
