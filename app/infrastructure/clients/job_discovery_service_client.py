@@ -1,6 +1,7 @@
 import httpx
 
 from app.application.ports.favorite_job_client import FavoriteJob, FavoriteJobClient
+from app.observability import outbound_headers
 
 
 class JobDiscoveryServiceClient(FavoriteJobClient):
@@ -14,10 +15,10 @@ class JobDiscoveryServiceClient(FavoriteJobClient):
             async with httpx.AsyncClient(timeout=httpx.Timeout(30.0)) as client:
                 response = await client.get(
                     f"{self._base_url}/api/v1/internal/favorites/{job_id}",
-                    headers={
+                    headers=outbound_headers({
                         self._user_id_header: str(user_id),
                         "X-Internal-Api-Key": self._internal_api_key,
-                    },
+                    }),
                 )
             if response.status_code == 404:
                 raise ValueError("The selected job is not in the user's favorites.")

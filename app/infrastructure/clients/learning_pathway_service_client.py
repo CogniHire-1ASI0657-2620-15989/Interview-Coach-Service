@@ -1,6 +1,7 @@
 import httpx
 
 from app.application.ports.learning_path_client import LearningPathClient, LearningPathProgress
+from app.observability import outbound_headers
 
 
 class LearningPathwayServiceClient(LearningPathClient):
@@ -14,10 +15,10 @@ class LearningPathwayServiceClient(LearningPathClient):
             async with httpx.AsyncClient(timeout=httpx.Timeout(30.0)) as client:
                 response = await client.get(
                     f"{self._base_url}/api/v1/learning-paths/{job_id}",
-                    headers={
+                    headers=outbound_headers({
                         self._user_id_header: str(user_id),
                         "X-Internal-Api-Key": self._internal_api_key,
-                    },
+                    }),
                 )
             if response.status_code == 404:
                 raise ValueError("Learning path not found.")

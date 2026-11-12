@@ -8,6 +8,7 @@ from app.application.ports.interview_llm_client import (
     InterviewPromptContext,
     LlmUnavailable,
 )
+from app.observability import outbound_headers
 
 
 class GroqInterviewLlmClient(InterviewLlmClient):
@@ -92,7 +93,7 @@ class GroqInterviewLlmClient(InterviewLlmClient):
         async with httpx.AsyncClient(timeout=httpx.Timeout(30.0)) as client:
             response = await client.post(
                 self._URL,
-                headers={"Authorization": f"Bearer {self._api_key}"},
+                headers=outbound_headers({"Authorization": f"Bearer {self._api_key}"}),
                 json=payload,
             )
         response.raise_for_status()
